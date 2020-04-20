@@ -1,0 +1,12 @@
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"name:泛微OA e-cology WorkflowCenterTreeData前台接口SQL注入漏洞|tag:E-cology|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:3|gray:true|result: null|o_msg:泛微OA e-cology WorkflowCenterTreeData前台接口SQL注入漏洞"; \
+flow: established, to_server; \
+flowbits: set, ecology_oa_workflowcentertreedata_sql; \
+content: "POST"; http_method; \
+content: "/mobile/browser/WorkflowCenterTreeData.jsp"; http_uri; \
+content: "node=wftype_"; http_uri; distance: 0; \
+content: "formids="; http_client_body; \
+pcre: "/(\)|%29){3}/PR"; \
+content: "%0a%0d"; distance: 0; \
+pcre: "/DBMS_PIPE\.RECEIVE_MESSAGE|CASEWHENTHEN|union|order by|group by|order%20by|group%20by|decode|union|select|utl_inaddr.get_host_address|column_name|user_tab_columns|UTL_HTTP\.request|rownum/PRi"; \
+pcre: "/(\(|%28){3}/PR"; \
+sid: 2019121706; rev:1;)

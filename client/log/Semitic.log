@@ -1,0 +1,2 @@
+[2316] 20/4/2020 -- 13:52:09 - (suricata.c:1084) <Notice> (LogVersion) -- This is Suricata version 5.0.2 RELEASE running in SYSTEM mode
+[2316] 20/4/2020 -- 13:52:09 - (tm-threads.c:2170) <Notice> (TmThreadWaitOnThreadInit) -- all 4 packet processing threads, 4 management threads initialized, engine started.

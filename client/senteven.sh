@@ -9,9 +9,13 @@ fi
 while true
 do
     new_file_name="eve_`date '+%Y%m%d%H%M%S'`.json"
-    mv ./log/eve.json ./upload_eve/tmp/$new_file_name
-    # curl -F "clientfile=@./upload_eve/tmp/$new_file_name" -H "Accept: application/json" http://$Server_host
-    # 成功
-    mv ./upload_eve/tmp/$new_file_name ./upload_eve/success/$new_file_name
+    cp ./log/eve.json ./upload_eve/tmp/$new_file_name
+    curl -F "clientfile=@./upload_eve/tmp/$new_file_name" -H "Accept: application/json" http://$Server_host/api/upload_eve
+
+    if [ $? -eq 0 ]; then
+        mv ./upload_eve/tmp/$new_file_name ./upload_eve/success/$new_file_name
+    else
+        mv ./upload_eve/tmp/$new_file_name ./upload_eve/error/$new_file_name
+    fi
     exit
 done

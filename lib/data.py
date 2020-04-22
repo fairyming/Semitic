@@ -1,0 +1,17 @@
+# encoding:utf-8
+from lib.logger import LOGGER
+
+# log
+logger = LOGGER
+
+# rule_dict
+rule_key = {
+    "2000121201": "tcp",
+    "2000121202": "udp",
+    "2000121203": "dns",
+    "2000121207": "smb",
+    "2000121208": "http",
+    "2000121209": "tls"
+}
+
+# 漏洞告警规则id 2020000001-2030000001

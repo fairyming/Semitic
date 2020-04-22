@@ -1,12 +1,12 @@
-alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"name:泛微OA e-cology WorkflowCenterTreeData前台接口SQL注入漏洞|tag:E-cology|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:3|gray:true|result: null|o_msg:泛微OA e-cology WorkflowCenterTreeData前台接口SQL注入漏洞"; \
-flow: established, to_server; \
-flowbits: set, ecology_oa_workflowcentertreedata_sql; \
-content: "POST"; http_method; \
-content: "/mobile/browser/WorkflowCenterTreeData.jsp"; http_uri; \
-content: "node=wftype_"; http_uri; distance: 0; \
-content: "formids="; http_client_body; \
-pcre: "/(\)|%29){3}/PR"; \
-content: "%0a%0d"; distance: 0; \
-pcre: "/DBMS_PIPE\.RECEIVE_MESSAGE|CASEWHENTHEN|union|order by|group by|order%20by|group%20by|decode|union|select|utl_inaddr.get_host_address|column_name|user_tab_columns|UTL_HTTP\.request|rownum/PRi"; \
-pcre: "/(\(|%28){3}/PR"; \
-sid: 2019121706; rev:1;)
+# 基础规则，用于统计所有流量数据
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"tcp"; flow: established, to_server; sid:2000121201; rev:9;)
+alert udp $EXTERNAL_NET any -> $HOME_NET any (msg:"udp"; sid:2000121202; rev:9;)
+alert dns $EXTERNAL_NET any -> $HOME_NET any (msg:"dns"; content: "|0100|"; offset:2; depth:2;sid:2000121203; rev:9;)
+alert smtp $EXTERNAL_NET any -> $HOME_NET any (msg:"smtp"; sid:2000121204; rev:9;)
+alert imap $EXTERNAL_NET any -> $HOME_NET any (msg:"imap"; sid:2000121205; rev:9;)
+alert ssh $EXTERNAL_NET any -> $HOME_NET any (msg:"ssh"; flow: established, to_server; sid:2000121206; rev:9;)
+alert smb $EXTERNAL_NET any -> $HOME_NET any (msg:"smb"; flow: established, to_server; sid:2000121207; rev:9;)
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"http"; flow: established, to_server;content: "Host"; http_header; nocase;  sid:2000121208; rev:9;)
+alert tls $EXTERNAL_NET any -> $HOME_NET any (msg:"tls"; flow: established, to_server; sid:2000121209; rev:9;)
+
+# 聚合流，同一flow的算一次请求

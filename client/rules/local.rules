@@ -9,4 +9,115 @@ alert smb $EXTERNAL_NET any -> $HOME_NET any (msg:"smb"; flow: established, to_s
 alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"http"; flow: established, to_server;content: "Host"; http_header; nocase;  sid:2000121208; rev:9;)
 alert tls $EXTERNAL_NET any -> $HOME_NET any (msg:"tls"; flow: established, to_server; sid:2000121209; rev:9;)
 
-# 聚合流，同一flow的算一次请求
+# 漏洞利用告警规则
+# id 2019010101-2020121212
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"name: Joomla 3.4.6 命令执行漏洞|tag:Joomla|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:3|gray:true|result: null|o_msg: Joomla 3.4.6 命令执行漏洞利用行为"; \
+flow: established, to_server; flowbits: set, joomla_rce_by_username; \
+flowbits: set, Joomla_3_4_6_rce_1; \
+content:"POST"; http_method; \
+content: "username="; http_client_body; \
+content: "%5C0%5C0%5C0"; distance: 0; \
+content: "password="; http_client_body; \
+content: "JDatabaseDriverMysqli"; distance: 0; http_client_body; \
+content: "JSimplepieFactory"; distance: 0; http_client_body; \
+content: "disconnectHandlers"; distance: 0; http_client_body; \
+content: "SimplePie"; distance: 0; http_client_body; \
+content: "JDatabaseDriverMysql"; distance: 0; http_client_body; \
+content: "cache_name_function"; distance: 0; http_client_body ; \
+content: "feed_url"; distance: 0; http_client_body; \
+pcre: "/(http|https|ftp)| 3A 2F 2F |/PR"; \
+content: "task=user.login"; http_client_body; \
+sid: 2019121201; rev:1;)
+
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"name: webmin任意命令执行漏洞(CVE-2019-15107)|tag:Webmin|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:3|gray:true|result: null|o_msg: webmin任意命令执行漏洞(CVE-2019-15107)"; flow: established, to_server; flowbits: set, webmin_rce_cve_2019_15107; content: "POST"; http_method; content: "password_change.cgi"; http_uri; pcre: "/(expired|old)=(\S*\s?((\|\|)|(%7c%7c)|(%7c)|(%3b)|(%26)|([\|\;])))?\s?(ls|cd|pwd|wget|curl|adduser|cat|passwd|chmod|echo|netstat|uname|sysctl|mysql|history|bash|useradd|ps|ifconfig|find|id|grep|awk|last|lsof|iptables|find|whoami|touch|ping)/P"; sid: 2019121301; rev:1;)
+
+alert http any any -> any any (msg:"name: webmin远程代码执行漏洞(CVE-2019-15642)|tag:Webmin|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:3|gray:true|result: null|o_msg: webmin远程代码执行漏洞(CVE-2019-15642)"; \
+flow: established, to_server; \
+flowbits: set, webmin_rce_cve_2019_15642_echo; \
+content: "POST"; http_method; \
+content: "rpc.cgi"; http_uri; \
+content: "webmin"; http_user_agent; nocase; \
+http_header_names; content: "Authorization"; nocase; pkt_data; \
+content: "OBJECT CGI"; http_client_body; startswith; \
+content: "print"; http_client_body; distance: 0; \
+content: "Content-Type"; http_client_body; distance: 0; \
+pcre: "/`(ls|cd|pwd|wget|curl|adduser|cat|passwd|chmod|echo|netstat|uname|sysctl|mysql|history|bash|useradd|ps|ifconfig|find|id|grep|awk|last|lsof|iptables|find|whoami|touch|ping)/PRi"; \
+sid: 2019121304; rev:1;)
+
+alert http any any -> any any (msg:"name: webmin远程代码执行漏洞(CVE-2019-15642)|tag:Webmin|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:3|gray:true|result: null|o_msg: webmin远程代码执行漏洞(CVE-2019-15642)"; \
+flow: established, to_server; \
+flowbits: set, webmin_rce_cve_2019_15642; \
+content: "POST"; http_method; \
+content: "rpc.cgi"; http_uri; \
+content: "webmin"; http_user_agent; nocase; \
+http_header_names; content: "Authorization"; nocase; pkt_data; \
+content: "OBJECT CGI"; http_client_body; startswith; \
+pcre: "/`(ls|cd|pwd|wget|curl|adduser|cat|passwd|chmod|echo|netstat|uname|sysctl|mysql|history|bash|useradd|ps|ifconfig|find|id|grep|awk|last|lsof|iptables|find|whoami|touch|ping)/PRi"; \
+sid: 2019121306; rev:1;)
+
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"name: Discuz!ML V3.X 代码注入|tag:Discuz!ML|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:3|gray:true|result: null|o_msg: Discuz!ML V3.X 代码注入"; \
+flow: established, to_server; \
+flowbits: set, discuz_code_injection; \
+content: "language="; http_cookie; \
+pcre: "/language=.*('|%27)(\.|%2e)\w+(\(|%28).*(\)|%29)(\.|%2e)('|%27)/C"; \
+sid: 2019121601; rev:1;)
+
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"name: Drupal 访问绕过漏洞|tag:Drupal|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:3|gray:true|result: null|o_msg: Drupal 访问绕过漏洞"; \
+flow: established, to_server; \
+flowbits: set, drupal_access_bypass; \
+content: "/node/add/article"; http_uri; \
+content: !"lastvisit"; http_cookie; \
+content: !"saltkey"; http_cookie; \
+content: !"ulastactivity"; http_cookie; \
+content: !"sid"; http_cookie; \
+sid: 2019121603; rev:1;)
+
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"name:Drupal 远程代码执行（CVE-2019-6340）|tag:远程代码执行|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:2|result:null|o_msg:Drupal 远程代码执行（CVE-2019-6340）|failed_by:http_status_3XX"; \
+flow: established, to_server; \
+flowbits: set, cve_2019_6340; \
+content: "/node"; http_uri; \
+content: "?_format=hal_json"; http_uri; distance: 0; \
+http_content_type; content: "application/hal+json"; pkt_data; \
+content: "\"options\": "; http_client_body; \
+content: "GuzzleHttp|5c 5c|Psr7|5c 5c|FnStream|5c|"; http_client_body; distance: 1; \
+content: "_fn_close"; http_client_body; distance: 0; \
+sid: 2020020603; rev:1;)
+
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"name:泛微OA e-cology WorkflowCenterTreeData前台接口SQL注入漏洞|tag:E-cology|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:3|gray:true|result: null|o_msg:泛微OA e-cology WorkflowCenterTreeData前台接口SQL注入漏洞"; \
+flow: established, to_server; \
+flowbits: set, ecology_oa_workflowcentertreedata_sql; \
+content: "POST"; http_method; \
+content: "/mobile/browser/WorkflowCenterTreeData.jsp"; http_uri; \
+content: "node=wftype_"; http_uri; distance: 0; \
+content: "formids="; http_client_body; \
+pcre: "/(\)|%29){3}/PR"; \
+content: "%0a%0d"; distance: 0; \
+pcre: "/DBMS_PIPE\.RECEIVE_MESSAGE|CASEWHENTHEN|union|order by|group by|order%20by|group%20by|decode|union|select|utl_inaddr.get_host_address|column_name|user_tab_columns|UTL_HTTP\.request|rownum/PRi"; \
+pcre: "/(\(|%28){3}/PR"; \
+sid: 2019121706; rev:1;)
+
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"name:泛微e-cology OA数据库配置信息泄漏漏洞|tag:E-cology|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:2|gray:true|result: success|o_msg:泛微e-cology OA数据库配置信息泄漏漏洞"; \
+flow: established, to_server; \
+flowbits: set, ecology_oa_beanbash_rce; noalert;\
+content: "/mobile/DBconfigReader.jsp"; http_uri; \
+sid: 2019121704; rev:1;)
+
+# 对应exec的payload
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"name:泛微OA E-cology 远程代码执行漏洞|tag:E-cology|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:3|gray:true|result: null|o_msg:泛微OA E-cology 远程代码执行漏洞"; \
+flow: established, to_server; \
+flowbits: set, ecology_oa_beanbash_rce; noalert;\
+content: "POST"; http_method; \
+pcre: "/(\/bsh.servlet.BshServlet|\/weaver\/bsh.servlet.BshServlet|\/weaveroa\/bsh.servlet.BshServlet|\/oa\/bsh.servlet.BshServlet)/Ii"; \
+content: "bsh.script="; http_client_body; fast_pattern; \
+pcre: "/((e|((\\|%5c)u0065))(x|(\\|%5c)u0078)(e|(\\|%5c)u0065)(c|(\\|%5c)u0063))/RPi"; \
+sid: 2019121701; rev:1;)
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"name:Apache Tomcat 任意文件包含漏洞(CVE-2020-1938)|tag:任意文件包含|direction:in|src:external_net|dest:home_net|level:attack|phase:exploit|severity:3|gray:true|result: null|o_msg:Apache Tomcat 任意文件包含漏洞(CVE-2020-1938)"; \
+flow: established, to_server; \
+flowbits: set, cve_2020_1938; \
+content: "|12 34|"; startswith; \
+content: "|02 02|"; offset: 2; \
+content: "|00 08|HTTP/1.1|00|"; distance: 0; within: 11; \
+content: "javax.servlet.include.request_uri|00 00|"; distance: 100; \
+content: "javax.servlet.include.servlet_path|00 00|"; distance: 4; \
+sid: 2020022002; rev: 1; )

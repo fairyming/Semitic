@@ -1,13 +1,13 @@
 from lib.data import logger
 from lib.enums import CUSTOM_LOGGING
 from lib.data import rule_key
-from lib.common import list_dict_duplicate_removal
+from lib.common import list_dict_duplicate_removal, deal_msg
 from api.database import Database
 import json
+
+
 # 用来处理告警信息：包括分类和合并流
 # 基础规则用于记录请求，其他规则用于记录告警
-
-
 def merge_flow(flow_list, type):
     result = []
     if type == "dns":
@@ -76,7 +76,7 @@ def merge_flow(flow_list, type):
                     result.append(udp_dict)
             except:
                 logger.log(CUSTOM_LOGGING.ERROR, "udp_merge_error")
-            
+
     elif type == "smb":
         flow_id = []
         for smb_flow in flow_list:
@@ -115,11 +115,40 @@ def merge_flow(flow_list, type):
                     flow_id.append(tls_flow["flow_id"])
                     result.append(tls_dict)
             except:
-                logger.log(CUSTOM_LOGGING.ERROR, "tls_merge_error[{}]".format(tls_flow))
-    print(type, len(list_dict_duplicate_removal(result)))
+                logger.log(CUSTOM_LOGGING.ERROR,
+                           "tls_merge_error[{}]".format(tls_flow))
+
+    elif type == "alert":
+        flow_id = []
+        for alert_flow in flow_list:
+            try:
+                alert_dict = {}
+                if (alert_flow["flow_id"], alert_flow["alert"]["signature_id"]) not in flow_id:
+                    msg = deal_msg(alert_flow["alert"]["signature"])
+                    alert_dict["name"] = msg["name"]
+                    alert_dict["flow_id"] = alert_flow["flow_id"]
+                    alert_dict["time"] = alert_flow["timestamp"]
+                    alert_dict["src"] = alert_flow["src_ip"] + \
+                        ":" + str(alert_flow["src_port"])
+                    alert_dict["dest"] = alert_flow["dest_ip"] + \
+                        ":" + str(alert_flow["dest_port"])
+                    alert_dict["sid"] = alert_flow["alert"]["signature_id"]
+                    if "app_proto" in alert_flow:
+                        alert_dict["proto"] = alert_flow["app_proto"]
+                    else:
+                        alert_dict["proto"] = alert_flow["proto"]
+
+                    flow_id.append(
+                        (alert_flow["flow_id"], alert_flow["alert"]["signature_id"]))
+                    result.append(alert_dict)
+            except:
+                logger.log(CUSTOM_LOGGING.ERROR,
+                           "alert_merge_error[{}]".format(alert_flow))
     return list_dict_duplicate_removal(result)
 
 # 报警分类，基础tcp\udp等和其他规则告警
+
+
 def classify_eve(flow_list):
     flow_dict = {}
     result = {}
@@ -131,24 +160,26 @@ def classify_eve(flow_list):
                 if rule_key[signature_id] not in flow_dict:
                     flow_dict[rule_key[signature_id]] = []
                 flow_dict[rule_key[signature_id]].append(flow)
-            else:
-                # 规则告警
-                pass
+            elif flow["alert"]["signature_id"] > 2019010101 and flow["alert"]["signature_id"] < 2020121212:
+                if "alert" not in flow_dict:
+                    flow_dict["alert"] = []
+                flow_dict["alert"].append(flow)
+                # 漏洞规则告警
         except:
             logger.log(CUSTOM_LOGGING.ERROR, "classify failed")
     for key in flow_dict:
         result[key] = merge_flow(flow_dict[key], key)
     return result
 
+
 # 技术债记录，fileconten：字符串字典，classify_eve加入转json
-
-
 def deal_eve_content(filecontent):
-
     link_mongo = Database()
     json_result = classify_eve(filecontent)
-    for type_json in json_result:
-        link_mongo.insert(type_json, json_result[type_json])
+    print(json_result)
+    if json_result:
+        for type_json in json_result:
+            link_mongo.insert(type_json, json_result[type_json])
     link_mongo.close()
 
 

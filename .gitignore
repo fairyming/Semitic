@@ -6,3 +6,4 @@
 *.log
 tmp.json
 test.py
+local.rules

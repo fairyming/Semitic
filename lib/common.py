@@ -1,4 +1,5 @@
 from functools import reduce
+import ipaddress
 
 # 字典列表去重
 def list_dict_duplicate_removal(data_list):
@@ -12,3 +13,7 @@ def deal_msg(msg):
     for i in tmp:
         msg_dict[i.split(":")[0]] = i.split(":")[1]
     return msg_dict
+
+# 判断是否为内网ip
+def private_ip(ip):
+    return ipaddress.ip_address(ip).is_private

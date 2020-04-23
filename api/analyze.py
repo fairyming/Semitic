@@ -174,18 +174,9 @@ def classify_eve(flow_list):
 
 # 技术债记录，fileconten：字符串字典，classify_eve加入转json
 def deal_eve_content(filecontent):
-    link_mongo = Database()
+    link_mongo = Database(database_name="Semitic")
     json_result = classify_eve(filecontent)
-    print(json_result)
     if json_result:
         for type_json in json_result:
             link_mongo.insert(type_json, json_result[type_json])
     link_mongo.close()
-
-
-# tcp ：5231093
-# udp： 21
-# http：2598
-# tls：252
-# smb：67
-# dns：165

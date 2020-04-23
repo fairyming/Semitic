@@ -1,8 +1,9 @@
 from lib.data import logger
 from lib.enums import CUSTOM_LOGGING
 from lib.data import rule_key
-from lib.common import list_dict_duplicate_removal, deal_msg
+from lib.common import list_dict_duplicate_removal, deal_msg, private_ip
 from api.database import Database
+from api.ioc import IoC
 import json
 
 
@@ -16,10 +17,10 @@ def merge_flow(flow_list, type):
                 dns_query_dict = {}
                 dns_query_dict["flow_id"] = dns_flow["flow_id"]
                 dns_query_dict["time"] = dns_flow["timestamp"]
-                dns_query_dict["src"] = dns_flow["src_ip"] + \
-                    ":"+str(dns_flow["src_port"])
-                dns_query_dict["dest"] = dns_flow["dest_ip"] + \
-                    ":"+str(dns_flow["dest_port"])
+                dns_query_dict["src_ip"] = dns_flow["src_ip"] 
+                dns_query_dict["src_port"] = dns_flow["src_port"]
+                dns_query_dict["dest_ip"] = dns_flow["dest_ip"] 
+                dns_query_dict["dest_port"] = dns_flow["dest_port"]
                 rrname_list = []
                 for query in dns_flow["dns"]["query"]:
                     if "rrname" in query:
@@ -35,10 +36,10 @@ def merge_flow(flow_list, type):
                 http_request_dict = {}
                 http_request_dict["flow_id"] = http_flow["flow_id"]
                 http_request_dict["time"] = http_flow["timestamp"]
-                http_request_dict["src"] = http_flow["src_ip"] + \
-                    ":"+str(http_flow["src_port"])
-                http_request_dict["dest"] = http_flow["dest_ip"] + \
-                    ":"+str(http_flow["dest_port"])
+                http_request_dict["src_ip"] = http_flow["src_ip"]
+                http_request_dict["src_port"] = http_flow["src_port"]
+                http_request_dict["dest_ip"] = http_flow["dest_ip"]
+                http_request_dict["dest_port"] = http_flow["dest_port"]
                 http_request_dict["hostname"] = http_flow["http"]["hostname"]
                 http_request_dict["uri"] = http_flow["http"]["url"]
                 http_request_dict["method"] = http_flow["http"]["http_method"]
@@ -52,10 +53,10 @@ def merge_flow(flow_list, type):
                 tcp_req_dict = {}
                 tcp_req_dict["flow_id"] = tcp_flow["flow_id"]
                 tcp_req_dict["time"] = tcp_flow["timestamp"]
-                tcp_req_dict["src"] = tcp_flow["src_ip"] + \
-                    ":"+str(tcp_flow["src_port"])
-                tcp_req_dict["dest"] = tcp_flow["dest_ip"] + \
-                    ":"+str(tcp_flow["dest_port"])
+                tcp_req_dict["src_ip"] = tcp_flow["src_ip"] 
+                tcp_req_dict["src_port"] = tcp_flow["src_port"]
+                tcp_req_dict["dest_ip"] = tcp_flow["dest_ip"]
+                tcp_req_dict["dest_port"] = tcp_flow["dest_port"]
                 result.append(tcp_req_dict)
             except:
                 logger.log(CUSTOM_LOGGING.ERROR, "tcp_merge_error")
@@ -68,10 +69,10 @@ def merge_flow(flow_list, type):
                 if udp_flow["flow_id"] not in flow_id:
                     udp_dict["flow_id"] = udp_flow["flow_id"]
                     udp_dict["time"] = udp_flow["timestamp"]
-                    udp_dict["src"] = udp_flow["src_ip"] + \
-                        ":"+str(udp_flow["src_port"])
-                    udp_dict["dest"] = udp_flow["dest_ip"] + \
-                        ":"+str(udp_flow["dest_port"])
+                    udp_dict["src_ip"] = udp_flow["src_ip"] 
+                    udp_dict["src_port"] = udp_flow["src_port"]
+                    udp_dict["dest_ip"] = udp_flow["dest_ip"]
+                    udp_dict["dest_port"] = udp_flow["dest_port"]
                     flow_id.append(udp_flow["flow_id"])
                     result.append(udp_dict)
             except:
@@ -85,10 +86,10 @@ def merge_flow(flow_list, type):
                 if smb_flow["flow_id"] not in flow_id:
                     smb_dict["flow_id"] = smb_flow["flow_id"]
                     smb_dict["time"] = smb_flow["timestamp"]
-                    smb_dict["src"] = smb_flow["src_ip"] + \
-                        ":"+str(smb_flow["src_port"])
-                    smb_dict["dest"] = smb_flow["dest_ip"] + \
-                        ":"+str(smb_flow["dest_port"])
+                    smb_dict["src_ip"] = smb_flow["src_ip"]
+                    smb_dict["src_port"] = smb_flow["src_port"]
+                    smb_dict["dest_ip"] = smb_flow["dest_ip"]
+                    smb_dict["dest_port"] = smb_flow["dest_port"]
                     flow_id.append(smb_flow["flow_id"])
                     result.append(smb_dict)
             except:
@@ -102,10 +103,10 @@ def merge_flow(flow_list, type):
                 if tls_flow["flow_id"] not in flow_id:
                     tls_dict["flow_id"] = tls_flow["flow_id"]
                     tls_dict["time"] = tls_flow["timestamp"]
-                    tls_dict["src"] = tls_flow["src_ip"] + \
-                        ":"+str(tls_flow["src_port"])
-                    tls_dict["dest"] = tls_flow["dest_ip"] + \
-                        ":"+str(tls_flow["dest_port"])
+                    tls_dict["src_ip"] = tls_flow["src_ip"] 
+                    tls_dict["src_port"] = tls_flow["src_port"]
+                    tls_dict["dest_ip"] = tls_flow["dest_ip"]
+                    tls_dict["dest_port"] = tls_flow["dest_port"]
                     if "sni" in tls_flow["tls"]:
                         tls_dict["sni"] = tls_flow["tls"]["sni"]
                     # if "serial" in tls_flow["tls"]:
@@ -128,10 +129,10 @@ def merge_flow(flow_list, type):
                     alert_dict["name"] = msg["name"]
                     alert_dict["flow_id"] = alert_flow["flow_id"]
                     alert_dict["time"] = alert_flow["timestamp"]
-                    alert_dict["src"] = alert_flow["src_ip"] + \
-                        ":" + str(alert_flow["src_port"])
-                    alert_dict["dest"] = alert_flow["dest_ip"] + \
-                        ":" + str(alert_flow["dest_port"])
+                    alert_dict["src_ip"] = alert_flow["src_ip"] 
+                    alert_dict["src_port"] = alert_flow["src_port"]
+                    alert_dict["dest_ip"] = alert_flow["dest_ip"]
+                    alert_dict["dest_port"] = alert_flow["dest_port"]
                     alert_dict["sid"] = alert_flow["alert"]["signature_id"]
                     if "app_proto" in alert_flow:
                         alert_dict["proto"] = alert_flow["app_proto"]
@@ -154,7 +155,6 @@ def classify_eve(flow_list):
     result = {}
     for flow in flow_list:
         try:
-            flow = json.loads(flow)
             signature_id = str(flow["alert"]["signature_id"])
             if signature_id in rule_key:
                 if rule_key[signature_id] not in flow_dict:
@@ -175,8 +175,30 @@ def classify_eve(flow_list):
 # 技术债记录，fileconten：字符串字典，classify_eve加入转json
 def deal_eve_content(filecontent):
     link_mongo = Database(database_name="Semitic")
-    json_result = classify_eve(filecontent)
+    link_ioc = IoC()
+    
+    eve_json = []
+    json_result = {}
+    if filecontent:
+        for i in filecontent:
+            eve_json.append(json.loads(i))
+        link_mongo.insert("eve", eve_json)
+        json_result = classify_eve(eve_json)
+
     if json_result:
         for type_json in json_result:
             link_mongo.insert(type_json, json_result[type_json])
+            try:
+                if type_json == "tcp":
+                    link_mongo.insert("alert_ioc", link_ioc.deal_tcp(json_result[type_json]))
+                elif type_json == "tls":
+                    link_mongo.insert("alert_ioc", link_ioc.deal_tls(json_result[type_json]))
+                elif type_json == "http":
+                    link_mongo.insert("alert_ioc", link_ioc.deal_http(json_result[type_json]))
+                elif type_json == "dns":
+                    link_mongo.insert("alert_ioc", link_ioc.deal_dns(json_result[type_json]))
+                    pass
+            except:
+                pass
     link_mongo.close()
+    link_ioc.link_mongo.close()

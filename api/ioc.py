@@ -3,9 +3,11 @@ from lib.common import private_ip
 from lib.data import logger
 from lib.enums import CUSTOM_LOGGING
 
+
 class IoC():
     def __init__(self):
-        self.key_list = ["flow_id", "time", "src_ip", "src_port", "dest_ip", "dest_port"]
+        self.key_list = ["flow_id", "time", "src_ip",
+                         "src_port", "dest_ip", "dest_port"]
         self.link_mongo = Database("Intelligence")
 
     def deal_tcp(self, tcp_list):
@@ -26,13 +28,14 @@ class IoC():
                     except:
                         pass
         return ioc_result
-    
+
     # {'flow_id': 980766215639499, 'time': '2020-04-20T09:39:48.628757+0000', 'src_ip': '192.168.1.100', 'src_port': 60932, 'dest_ip': '36.152.44.96', 'dest_port': 443, 'sni': 'www.baidu.com', '_id': ObjectId('5ea18add65f32300fca3c016')}
     def deal_tls(self, tls_list):
         ioc_result = []
         for tls_dict in tls_list:
             try:
-                result = self.link_mongo.select("domain", {"domain": tls_dict["sni"]})[0]
+                result = self.link_mongo.select(
+                    "domain", {"domain": tls_dict["sni"]})[0]
                 if result["tags"]:
                     ioc_alert = {}
                     for key in self.key_list:
@@ -49,7 +52,8 @@ class IoC():
         ioc_result = []
         for http_dict in http_list:
             try:
-                result = self.link_mongo.select("url", {"url": {"$regex": http_dict["hostname"]}})[0]
+                result = self.link_mongo.select(
+                    "url", {"url": {"$regex": http_dict["hostname"]}})[0]
                 if result["tags"]:
                     ioc_alert = {}
                     for key in self.key_list:
@@ -60,14 +64,15 @@ class IoC():
             except:
                 pass
         return ioc_result
-    
+
     # {'flow_id': 2206433917676972, 'time': '2020-04-20T09:39:46.011692+0000', 'src_ip': '192.168.1.100', 'src_port': 3143, 'dest_ip': '211.138.180.3', 'dest_port': 53, 'rrname': ['www.bing.com'], '_id': ObjectId('5ea19ded9dae6710b5616387')}
     def deal_dns(self, dns_list):
         ioc_result = []
         for dns_dict in dns_list:
             try:
                 for rrname in dns_dict["rrname"]:
-                    result = self.link_mongo.select("domain", {"domain": rrname})[0]
+                    result = self.link_mongo.select(
+                        "domain", {"domain": rrname})[0]
                     if result["tags"]:
                         ioc_alert = {}
                         for key in self.key_list:
@@ -78,7 +83,3 @@ class IoC():
             except:
                 pass
         return ioc_result
-
-        
-
-    

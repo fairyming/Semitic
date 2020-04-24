@@ -17,9 +17,9 @@ def merge_flow(flow_list, type):
                 dns_query_dict = {}
                 dns_query_dict["flow_id"] = dns_flow["flow_id"]
                 dns_query_dict["time"] = dns_flow["timestamp"]
-                dns_query_dict["src_ip"] = dns_flow["src_ip"] 
+                dns_query_dict["src_ip"] = dns_flow["src_ip"]
                 dns_query_dict["src_port"] = dns_flow["src_port"]
-                dns_query_dict["dest_ip"] = dns_flow["dest_ip"] 
+                dns_query_dict["dest_ip"] = dns_flow["dest_ip"]
                 dns_query_dict["dest_port"] = dns_flow["dest_port"]
                 rrname_list = []
                 for query in dns_flow["dns"]["query"]:
@@ -53,7 +53,7 @@ def merge_flow(flow_list, type):
                 tcp_req_dict = {}
                 tcp_req_dict["flow_id"] = tcp_flow["flow_id"]
                 tcp_req_dict["time"] = tcp_flow["timestamp"]
-                tcp_req_dict["src_ip"] = tcp_flow["src_ip"] 
+                tcp_req_dict["src_ip"] = tcp_flow["src_ip"]
                 tcp_req_dict["src_port"] = tcp_flow["src_port"]
                 tcp_req_dict["dest_ip"] = tcp_flow["dest_ip"]
                 tcp_req_dict["dest_port"] = tcp_flow["dest_port"]
@@ -69,7 +69,7 @@ def merge_flow(flow_list, type):
                 if udp_flow["flow_id"] not in flow_id:
                     udp_dict["flow_id"] = udp_flow["flow_id"]
                     udp_dict["time"] = udp_flow["timestamp"]
-                    udp_dict["src_ip"] = udp_flow["src_ip"] 
+                    udp_dict["src_ip"] = udp_flow["src_ip"]
                     udp_dict["src_port"] = udp_flow["src_port"]
                     udp_dict["dest_ip"] = udp_flow["dest_ip"]
                     udp_dict["dest_port"] = udp_flow["dest_port"]
@@ -103,7 +103,7 @@ def merge_flow(flow_list, type):
                 if tls_flow["flow_id"] not in flow_id:
                     tls_dict["flow_id"] = tls_flow["flow_id"]
                     tls_dict["time"] = tls_flow["timestamp"]
-                    tls_dict["src_ip"] = tls_flow["src_ip"] 
+                    tls_dict["src_ip"] = tls_flow["src_ip"]
                     tls_dict["src_port"] = tls_flow["src_port"]
                     tls_dict["dest_ip"] = tls_flow["dest_ip"]
                     tls_dict["dest_port"] = tls_flow["dest_port"]
@@ -129,7 +129,7 @@ def merge_flow(flow_list, type):
                     alert_dict["name"] = msg["name"]
                     alert_dict["flow_id"] = alert_flow["flow_id"]
                     alert_dict["time"] = alert_flow["timestamp"]
-                    alert_dict["src_ip"] = alert_flow["src_ip"] 
+                    alert_dict["src_ip"] = alert_flow["src_ip"]
                     alert_dict["src_port"] = alert_flow["src_port"]
                     alert_dict["dest_ip"] = alert_flow["dest_ip"]
                     alert_dict["dest_port"] = alert_flow["dest_port"]
@@ -172,11 +172,10 @@ def classify_eve(flow_list):
     return result
 
 
-# 技术债记录，fileconten：字符串字典，classify_eve加入转json
 def deal_eve_content(filecontent):
     link_mongo = Database(database_name="Semitic")
     link_ioc = IoC()
-    
+
     eve_json = []
     json_result = {}
     if filecontent:
@@ -190,13 +189,17 @@ def deal_eve_content(filecontent):
             link_mongo.insert(type_json, json_result[type_json])
             try:
                 if type_json == "tcp":
-                    link_mongo.insert("alert_ioc", link_ioc.deal_tcp(json_result[type_json]))
+                    link_mongo.insert(
+                        "alert_ioc", link_ioc.deal_tcp(json_result[type_json]))
                 elif type_json == "tls":
-                    link_mongo.insert("alert_ioc", link_ioc.deal_tls(json_result[type_json]))
+                    link_mongo.insert(
+                        "alert_ioc", link_ioc.deal_tls(json_result[type_json]))
                 elif type_json == "http":
-                    link_mongo.insert("alert_ioc", link_ioc.deal_http(json_result[type_json]))
+                    link_mongo.insert(
+                        "alert_ioc", link_ioc.deal_http(json_result[type_json]))
                 elif type_json == "dns":
-                    link_mongo.insert("alert_ioc", link_ioc.deal_dns(json_result[type_json]))
+                    link_mongo.insert(
+                        "alert_ioc", link_ioc.deal_dns(json_result[type_json]))
                     pass
             except:
                 pass

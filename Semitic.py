@@ -20,6 +20,9 @@ def upload_eve():
         client_addr=client_addr, filename=filename, allow_num=len(filecontent)))
     return "upload sucess"
 
+@app.route("/api/display", methods=["GET"])
+def dispaly():
+    pass
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

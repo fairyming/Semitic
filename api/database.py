@@ -14,6 +14,10 @@ class Database():
     def select(self, COLLECTION_NAME, query):
         mycol = self.mydb[COLLECTION_NAME]
         return mycol.find(query)
+    
+    def count(self, COLLECTION_NAME):
+        mycol = self.mydb[COLLECTION_NAME]
+        return mycol.count()
 
     def close(self):
         self.myclient.close()

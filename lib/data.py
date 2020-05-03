@@ -15,3 +15,11 @@ rule_key = {
 }
 
 # 漏洞告警规则id 2020000001-2030000001
+
+
+# ioc
+ioc = ["domain", "email", "hash", "ip", "url"]
+
+
+# proto
+proto = ["dns", "tls", "http", "tcp", "udp"]

@@ -4,6 +4,7 @@ from lib.data import logger, ioc, proto
 from lib.enums import CUSTOM_LOGGING
 from api.analyze import deal_eve_content
 from api.display import Display_Semitic, Display_Intelligence, Visualization
+from api.search import Search
 app = Flask(__name__)
 
 
@@ -42,7 +43,7 @@ def display_ioc():
         return jsonify({"data": "无当前种类ioc"})
 
 
-@app.route("/api/display/proto", methods = ["GET"])
+@app.route("/api/display/proto", methods=["GET"])
 def display_proto():
     proto_type = request.args.get("type")
     if proto_type in proto:
@@ -50,6 +51,13 @@ def display_proto():
     else:
         return jsonify({"data": "暂不支持当前协议"})
 
+
+@app.route("/api/search/ioc", methods=["POST"])
+def search_ioc():
+    # ip\domain\url\email\hash
+    # eg:{"ip":"123.123.123.123"}
+    data = request.get_json()
+    return jsonify(Search(data).get_reslut())
 
 
 @app.route("/api/display/visualization", methods=["GET"])

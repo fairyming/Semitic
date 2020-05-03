@@ -1,15 +1,16 @@
 from api.database import Database
 from lib.data import ioc, proto
 
+
 class Display_Semitic():
     def __init__(self):
         self.link = Database("Semitic")
         super().__init__()
-    
+
     def display_alert_rule(self):
         result = {}
         result["data"] = []
-        select_result = self.link.select("alert",query={})
+        select_result = self.link.select("alert", query={})
         if select_result:
             for alert in select_result:
                 alert.pop("_id")
@@ -20,14 +21,14 @@ class Display_Semitic():
     def display_alert_ioc(self):
         result = {}
         result["data"] = []
-        select_result = self.link.select("alert_ioc",query={})
+        select_result = self.link.select("alert_ioc", query={})
         if select_result:
             for alert in select_result:
                 alert.pop("_id")
                 result["data"].append(alert)
         self.link.close()
         return result
-    
+
     def display_proto(self, type):
         result = {}
         result["data"] = []
@@ -38,7 +39,6 @@ class Display_Semitic():
         self.link.close
         return result
 
-
     def alert_count(self):
         result = {}
         result["rule_count"] = self.link.count("alert")
@@ -46,7 +46,7 @@ class Display_Semitic():
         result["count"] = result["rule_count"] + result["ioc_count"]
         self.link.close()
         return result
-    
+
     def proto_count(self):
         result = {}
         count = 0
@@ -58,23 +58,22 @@ class Display_Semitic():
         return result
 
 
-
 class Display_Intelligence():
     def __init__(self):
         self.link = Database("Intelligence")
         super().__init__()
-    
+
     def display_ioc(self, type):
         result = {}
         result["data"] = []
-        select_result = self.link.select(type,query={})
+        select_result = self.link.select(type, query={})
         if select_result:
             for alert in select_result:
                 alert.pop("_id")
                 result["data"].append(alert)
         self.link.close()
         return result
-    
+
     def ioc_count(self):
         result = {}
         count = 0
@@ -84,8 +83,6 @@ class Display_Intelligence():
         result["count"] = count
         self.link.close()
         return result
-    
-
 
 
 class Visualization():

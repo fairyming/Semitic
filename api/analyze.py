@@ -127,6 +127,7 @@ def merge_flow(flow_list, type):
                 if (alert_flow["flow_id"], alert_flow["alert"]["signature_id"]) not in flow_id:
                     msg = deal_msg(alert_flow["alert"]["signature"])
                     alert_dict["name"] = msg["name"]
+                    alert_dict["tag"] = msg["tag"]
                     alert_dict["flow_id"] = alert_flow["flow_id"]
                     alert_dict["time"] = alert_flow["timestamp"]
                     alert_dict["src_ip"] = alert_flow["src_ip"]
@@ -134,7 +135,7 @@ def merge_flow(flow_list, type):
                     alert_dict["dest_ip"] = alert_flow["dest_ip"]
                     alert_dict["dest_port"] = alert_flow["dest_port"]
                     alert_dict["sid"] = alert_flow["alert"]["signature_id"]
-                    if "app_proto" in alert_flow:
+                    if "app_proto" in alert_flow and alert_flow["app_proto"] != "failed":
                         alert_dict["proto"] = alert_flow["app_proto"]
                     else:
                         alert_dict["proto"] = alert_flow["proto"]
@@ -145,6 +146,28 @@ def merge_flow(flow_list, type):
             except:
                 logger.log(CUSTOM_LOGGING.ERROR,
                            "alert_merge_error[{}]".format(alert_flow))
+    elif type == "service":
+        for service_flow in flow_list:
+            try:
+                service_dict = {}
+                msg = deal_msg(service_flow["alert"]["signature"])
+                service_dict["service_name"] = msg["service_name"]
+                service_dict["flow_id"] = service_flow["flow_id"]
+                service_dict["time"] = service_flow["timestamp"]
+                if msg["server"] == "dest":
+                    service_dict["service_ip"] = service_flow["dest_ip"]
+                    service_dict["service_port"] = service_flow["dest_port"]
+                else:
+                    service_dict["service_ip"] = service_flow["src_ip"]
+                    service_dict["service_port"] = service_flow["src_port"]
+                service_dict["sid"] = service_flow["alert"]["signature_id"]
+                result.append(service_dict)
+                
+            except:
+                logger.log(CUSTOM_LOGGING.ERROR,
+                           "alert_merge_error[{}]".format(service_flow))
+
+
     return list_dict_duplicate_removal(result)
 
 # 报警分类，基础tcp\udp等和其他规则告警
@@ -160,11 +183,16 @@ def classify_eve(flow_list):
                 if rule_key[signature_id] not in flow_dict:
                     flow_dict[rule_key[signature_id]] = []
                 flow_dict[rule_key[signature_id]].append(flow)
+            # 漏洞规则告警
             elif flow["alert"]["signature_id"] > 2019010101 and flow["alert"]["signature_id"] < 2020121212:
                 if "alert" not in flow_dict:
                     flow_dict["alert"] = []
                 flow_dict["alert"].append(flow)
-                # 漏洞规则告警
+            # 服务告警规则
+            elif flow["alert"]["signature_id"] > 1019010101 and flow["alert"]["signature_id"] < 1020121212:
+                if "service" not in flow_dict:
+                    flow_dict["service"] = []
+                flow_dict["service"].append(flow)
         except:
             logger.log(CUSTOM_LOGGING.ERROR, "classify failed")
     for key in flow_dict:
@@ -183,7 +211,7 @@ def deal_eve_content(filecontent):
             eve_json.append(json.loads(i))
         link_mongo.insert("eve", eve_json)
         json_result = classify_eve(eve_json)
-
+    print(json_result["service"])
     if json_result:
         for type_json in json_result:
             link_mongo.insert(type_json, json_result[type_json])

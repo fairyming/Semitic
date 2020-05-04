@@ -51,6 +51,9 @@ def display_proto():
     else:
         return jsonify({"data": "暂不支持当前协议"})
 
+@app.route("/api/display/service", methods=["GET"])
+def display_service():
+    return jsonify(Display_Semitic().display_service())
 
 @app.route("/api/search/ioc", methods=["POST"])
 def search_ioc():

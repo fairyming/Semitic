@@ -29,6 +29,17 @@ class Display_Semitic():
         self.link.close()
         return result
 
+    def display_service(self):
+        result = {}
+        result["data"] = []
+        select_result = self.link.select("service", query={})
+        if select_result:
+            for service in select_result:
+                service.pop("_id")
+                result["data"].append(service)
+        self.link.close()
+        return result
+
     def display_proto(self, type):
         result = {}
         result["data"] = []

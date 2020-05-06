@@ -12,5 +12,60 @@ app = Flask(__name__)
 def hello_world():
     return render_template("index.html")
 
+
+@app.route("/alert_rule", methods=["GET"])
+def dispaly_alert_rule():
+    # return jsonify(Display_Semitic().display_alert_rule())
+    return render_template('alert_rule.html')
+
+
+@app.route("/alert_ioc", methods=["GET"])
+def display_alert_ioc():
+    # return jsonify(Display_Semitic().display_alert_ioc())
+    return render_template('alert_ioc.html')
+
+
+@app.route("/ioc", methods=["GET"])
+def display_ioc():
+    ioc_type = request.args.get("type")
+    if ioc_type in ioc:
+        # return jsonify(Display_Intelligence().display_ioc(ioc_type))
+        return render_template('ioc_{}.html'.format(ioc_type))
+    else:
+        return jsonify({"data": "无当前种类ioc"})
+
+
+@app.route("/proto", methods=["GET"])
+def display_proto():
+    proto_type = request.args.get("type")
+    if proto_type in proto:
+        # return jsonify(Display_Semitic().display_proto(proto_type))
+        return render_template(proto_type + '.html')
+    else:
+        return jsonify({"data": "暂不支持当前协议"})
+
+
+@app.route("/service", methods=["GET"])
+def display_service():
+    # return jsonify(Display_Semitic().display_service())
+    return render_template('service.html')
+
+
+@app.route("/api/search/ioc", methods=["POST"])
+def search_ioc():
+    # ip\domain\url\email\hash
+    # eg:{"ip":"123.123.123.123"}
+    data = request.get_json()
+    return jsonify(Search(data).get_reslut())
+
+
+@app.route("/api/display/visualization", methods=["GET"])
+def visualization():
+    # 返回当前库中ioc种类及每个种类个数，及所有ioc个数
+    # 返回告警数，ioc告警数及规则告警数
+    # 返回流量协议分布
+    return jsonify(Visualization().display())
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

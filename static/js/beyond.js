@@ -30,7 +30,7 @@ if (location.pathname != "/index-rtl-fa.html" && location.pathname != "/index-rt
         switchClasses("pull-right", "pull-left");
         switchClasses("databox-right", "databox-left");
         switchClasses("item-right", "item-left");
-        $('.navbar-brand small img').attr('src', 'assets/img/logo-rtl.png');
+        $('.navbar-brand small img').attr('src', 'static/img/logo-rtl.png');
         if (rtlchanger != null)
             document.getElementById('rtl-changer').checked = true;
     }

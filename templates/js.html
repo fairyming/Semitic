@@ -5,3 +5,15 @@
 <script src="{{ url_for('static',filename='js/slimscroll/jquery.slimscroll.min.js') }}"></script>
 <!--Beyond Scripts-->
 <script src="{{ url_for('static',filename='js/beyond.js') }}"></script>
+<script>
+    $(window).bind("load", function () {
+
+        /*Sets Themed Colors Based on Themes*/
+        themeprimary = getThemeColorFromCss('themeprimary');
+        themesecondary = getThemeColorFromCss('themesecondary');
+        themethirdcolor = getThemeColorFromCss('themethirdcolor');
+        themefourthcolor = getThemeColorFromCss('themefourthcolor');
+        themefifthcolor = getThemeColorFromCss('themefifthcolor');
+
+    });
+</script>

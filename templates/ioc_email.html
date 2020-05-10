@@ -19,13 +19,13 @@
                 				<div class="widget-header">
                 					<span class="widget-caption">IoCs-EMALI</span>
                 					<div class="widget-buttons">
-                						<ul class="pagination pagination-sm">
+                						<!-- <ul class="pagination pagination-sm">
                 							<li class="disabled"><a href="#">«</a></li>
                                             <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
                                             <li><a href="#">2</a></li>
                                             <li><a href="#">3</a></li>
                                             <li><a href="#">»</a></li>
-                						</ul>
+                						</ul> -->
                 					</div>
                 				</div>
                 				<div class="widget-body">
@@ -35,23 +35,29 @@
                                                 <th>发现时间</th>
                                                 <th>IoCs</th>
 												<th>tag</th>
-                                                <th>reference</th>
+                                                <!-- <th>reference</th> -->
                 							</tr>
                 						</thead>
                 						<tbody>
-                							<tr>
-                                                <td>2017-08-29 09:47:37</td>
-                                                <td>nexuszeta1337@gmail.com</td>
+                                            {% for ioc in iocs %} 
+                                            <tr>
+                                                <td>{{ioc.disclosure_time}}</td>
+                                                <td>{{ioc.email}}</td>
+                                                
                                                 <td>
-                                                    <a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">拒绝服务攻击</a>
-                                                    <a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">蜜罐捕获</a>
-                                                    <a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">木马</a>
+                                                    {% for tag in ioc.tags %} 
+                                                    <a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">{{tag}}</a>
+                                                    {% endfor %}
                                                 </td>
-                                                <td><a href="https://x.threatbook.cn/nodev4/vb4/article?threatInfoID=302" target="_blank">https://x.threatbook.cn/nodev4/vb4/article?threatInfoID=302</href></td>
-											</tr>
-                						</tbody>
+                                                <!-- <td><a href="{{ioc.reference}}" target="_blank">{{ioc.reference}}</href></td> -->
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
                 					</table>
-                				</div>
+                                </div>
+                                <div class="widget-buttons">
+                                    {{ pagination.links }}
+                                </div>
                 			</div>
                 		</div>
                 	</div>
@@ -67,18 +73,6 @@
     </div>
 
     {% include 'js.html' ignore missing %} 
-    <script>
-        $(window).bind("load", function () {
-
-            /*Sets Themed Colors Based on Themes*/
-            themeprimary = getThemeColorFromCss('themeprimary');
-            themesecondary = getThemeColorFromCss('themesecondary');
-            themethirdcolor = getThemeColorFromCss('themethirdcolor');
-            themefourthcolor = getThemeColorFromCss('themefourthcolor');
-            themefifthcolor = getThemeColorFromCss('themefifthcolor');
-
-        });
-    </script>
 </body>
 <!--  /Body -->
 </html>

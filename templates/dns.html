@@ -18,7 +18,7 @@
                         <div class="widget">
                             <div class="widget-header">
                                 <span class="widget-caption">DNS</span>
-                                <div class="widget-buttons">
+                                <!-- <div class="widget-buttons">
                                     <ul class="pagination pagination-sm">
                                         <li class="disabled"><a href="#">«</a></li>
                                         <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
@@ -26,29 +26,41 @@
                                         <li><a href="#">3</a></li>
                                         <li><a href="#">»</a></li>
                                     </ul>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="widget-body">
                                 <table class="table table-hover table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>源地址</th>
-                                            <th>目的地址</th>
                                             <th>时间</th>
+                                            <th>源IP</th>
+                                            <th>源端口</th>
+                                            <th>目的IP</th>
+                                            <th>目的端口</th>
                                             <th>解析地址</th>
-                                            <th>流</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {% for proto in protos %} 
                                         <tr>
-                                            <td>47.110.180.60:37613</td>
-                                            <td>172.17.61.250:4506</td>
-                                            <td>2020-05-03T06:28:45</td>
-                                            <td>7wu93ksh29qpl70nas0.win</td>
-                                            <td>956800364562728</td>
+                                            <td>{{proto.time[0:19].replace("T", " ")}}</td>
+                                            <td>{{proto.src_ip}}</td>
+                                            <td>{{proto.src_port}}</td>
+                                            <td>{{proto.dest_ip}}</td>
+                                            <td>{{proto.dest_port}}</td>
+                                            <td>
+                                                {% for domain in proto.rrname %} 
+                                                <a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">{{domain}}</a>
+                                                {% endfor %}
+                                            </td>
+                                            
                                         </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
+                            </div>
+                            <div class="widget-buttons">
+                                {{ pagination.links }}
                             </div>
                         </div>
                     </div>
@@ -65,18 +77,6 @@
 </div>
 
 {% include 'js.html' ignore missing %} >
-<script>
-    $(window).bind("load", function () {
-
-        /*Sets Themed Colors Based on Themes*/
-        themeprimary = getThemeColorFromCss('themeprimary');
-        themesecondary = getThemeColorFromCss('themesecondary');
-        themethirdcolor = getThemeColorFromCss('themethirdcolor');
-        themefourthcolor = getThemeColorFromCss('themefourthcolor');
-        themefifthcolor = getThemeColorFromCss('themefifthcolor');
-
-    });
-</script>
 </body>
 <!--  /Body -->
 </html>

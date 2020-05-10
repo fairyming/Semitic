@@ -33,20 +33,25 @@
                 						<thead>
                 							<tr>
                                                 <th>上线时间</th>
-                                                <th>IP</th>
+                                                <th>服务所在IP</th>
+                                                <th>服务所在端口</th>
 												<th>服务名称</th>
                                                 <th>规则id</th>
                 							</tr>
                 						</thead>
                 						<tbody>
-                							<tr>
-                                                <td>2020-04-28T04:16:52</td>
-                                                <td>192.168.1.100:53208</td>
+                							{% for service in services %} 
+                                            <tr>
+                                                <td>{{service.time[0:19].replace("T", " ")}}</td>
+                                                <td>{{service.service_ip}}</td>
+                                                <td>{{service.service_port}}</td>
                                                 <td>
-                                                    <a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">AnyDesk</a>
+                                                    <a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">{{service.service_name}}</a>
                                                 </td>
-                                                <td>1020000002</td>
-											</tr>
+                                                <td>{{service.sid}}</td>
+                                                
+                                            </tr>
+                                            {% endfor %}
                 						</tbody>
                 					</table>
                 				</div>
@@ -65,18 +70,6 @@
     </div>
 
     {% include 'js.html' ignore missing %} 
-    <script>
-        $(window).bind("load", function () {
-
-            /*Sets Themed Colors Based on Themes*/
-            themeprimary = getThemeColorFromCss('themeprimary');
-            themesecondary = getThemeColorFromCss('themesecondary');
-            themethirdcolor = getThemeColorFromCss('themethirdcolor');
-            themefourthcolor = getThemeColorFromCss('themefourthcolor');
-            themefifthcolor = getThemeColorFromCss('themefifthcolor');
-
-        });
-    </script>
 </body>
 <!--  /Body -->
 </html>

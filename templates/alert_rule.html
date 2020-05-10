@@ -19,45 +19,56 @@
                 				<div class="widget-header">
                 					<span class="widget-caption">规则告警列表</span>
                 					<div class="widget-buttons">
-                						<ul class="pagination pagination-sm">
-                							<li class="disabled"><a href="#">«</a></li>
-                                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                                            <li><a href="#">2</a></li>
+                						<!-- <ul class="pagination pagination-sm"> -->
+                							<!-- <li class="disabled"><a href="#">«</a></li> -->
+											<!-- <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li> -->
+											
+                                            <!-- <li><a href="#">2</a></li>
                                             <li><a href="#">3</a></li>
-                                            <li><a href="#">»</a></li>
-                						</ul>
+                                            <li><a href="#">»</a></li> -->
+                						<!-- </ul> -->
                 					</div>
                 				</div>
                 				<div class="widget-body">
                 					<table class="table table-hover table-bordered">
                 						<thead>
                 							<tr>
+												
+												<th>时间</th>
+												<th>源IP</th>
+												<th>源端口</th>
+												<th>目的IP</th>
+												<th>目的端口</th>
+												<th>协议</th>
 												<th>告警名称</th>
 												<th>tag</th>
-                								<th>源地址</th>
-												<th>目的地址</th>
-												<th>协议</th>
-												<th>时间</th>
-												<th>流</th>
+												<!-- <th>流</th> -->
 												<th>规则id</th>
                 							</tr>
                 						</thead>
                 						<tbody>
+											{% for alert in alert_rule %} 
                 							<tr>
-												<td>SaltStack授权绕过(CVE-2020-11651,CVE-2020-11652)</td>
+												<td>{{alert.time[0:19].replace("T", " ")}}</td>
+												<td>{{alert.src_ip}}</td>
+												<td>{{alert.src_port}}</td>
+												<td>{{alert.dest_ip}}</td>
+												<td>{{alert.dest_port}}</td>
+												<td>{{alert.proto}}</td>
+												<td>{{alert.name}}</td>
 												<td>
-													<a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">信息泄露</a>
+													<a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">{{alert.tag}}</a>
 												</td>
-                								<td>47.110.180.60:37613</td>
-												<td>172.17.61.250:4506</td>
-												<td>TCP</td>
-												<td>2020-05-03T06:28:45</td>
-												<td>2175997475635570</td>
-												<td>2020050301</td>
+												<!-- <td>{{alert.flow_id}}</td> -->
+												<td>{{alert.sid}}</td>
 											</tr>
-                						</tbody>
-                					</table>
-                				</div>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+								<div class="widget-buttons">
+									{{ pagination.links }}
+								</div>
                 			</div>
                 		</div>
                 	</div>
@@ -73,18 +84,6 @@
     </div>
 
     {% include 'js.html' ignore missing %} 
-    <script>
-        $(window).bind("load", function () {
-
-            /*Sets Themed Colors Based on Themes*/
-            themeprimary = getThemeColorFromCss('themeprimary');
-            themesecondary = getThemeColorFromCss('themesecondary');
-            themethirdcolor = getThemeColorFromCss('themethirdcolor');
-            themefourthcolor = getThemeColorFromCss('themefourthcolor');
-            themefifthcolor = getThemeColorFromCss('themefifthcolor');
-
-        });
-    </script>
 </body>
 <!--  /Body -->
 </html>

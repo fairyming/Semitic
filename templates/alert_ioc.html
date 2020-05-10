@@ -19,40 +19,52 @@
                 				<div class="widget-header">
                 					<span class="widget-caption">IoC告警列表</span>
                 					<div class="widget-buttons">
-                						<ul class="pagination pagination-sm">
+                						<!-- <ul class="pagination pagination-sm">
                 							<li class="disabled"><a href="#">«</a></li>
                                             <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
                                             <li><a href="#">2</a></li>
                                             <li><a href="#">3</a></li>
                                             <li><a href="#">»</a></li>
-                						</ul>
+                						</ul> -->
                 					</div>
                 				</div>
                 				<div class="widget-body">
                 					<table class="table table-hover table-bordered">
                 						<thead>
                 							<tr>
-                								<th>源地址</th>
-												<th>目的地址</th>
 												<th>时间</th>
+												<th>源IP</th>
+												<th>源端口</th>
+												<th>目的IP</th>
+												<th>目的端口</th>
 												<th>IoC</th>
 												<th>tag</th>
                 							</tr>
                 						</thead>
                 						<tbody>
+											{% for alert in alert_ioc %} 
                 							<tr>
-                								<td>47.110.180.60:37613</td>
-												<td>172.17.61.250:4506</td>
-												<td>2020-05-03T06:28:45</td>
-												<td>115.28.245.9</td>
+												<td>{{alert.time[0:19].replace("T", " ")}}</td>
+												<td>{{alert.src_ip}}</td>
+												<td>{{alert.src_port}}</td>
+												<td>{{alert.dest_ip}}</td>
+												<td>{{alert.dest_port}}</td>
+												<td>{{alert.ioc}}</td>
+												<!-- <td>{{alert.tags}}</td> -->										
 												<td>
-                                                    <a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">入侵</a>
-                                                    <a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">扫描</a>
-                                                </td>
+													{% for ioc in alert.tags %} 
+													<a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">{{ioc}}</a>
+													{% endfor %}
+												</td>
+												<!-- <td>{{alert.flow_id}}</td> -->
 											</tr>
+											{% endfor %}
                 						</tbody>
                 					</table>
-                				</div>
+								</div>
+								<div class="widget-buttons">
+									{{ pagination.links }}
+								</div>
                 			</div>
                 		</div>
                 	</div>
@@ -68,18 +80,6 @@
     </div>
 
     {% include 'js.html' ignore missing %} 
-    <script>
-        $(window).bind("load", function () {
-
-            /*Sets Themed Colors Based on Themes*/
-            themeprimary = getThemeColorFromCss('themeprimary');
-            themesecondary = getThemeColorFromCss('themesecondary');
-            themethirdcolor = getThemeColorFromCss('themethirdcolor');
-            themefourthcolor = getThemeColorFromCss('themefourthcolor');
-            themefifthcolor = getThemeColorFromCss('themefifthcolor');
-
-        });
-    </script>
 </body>
 <!--  /Body -->
 </html>

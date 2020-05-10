@@ -1,0 +1,18 @@
+<html lang="en">
+<head>
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<meta charset="UTF-8"> <title>Title</title>
+</head>
+<body>
+{% for article in alert_rule %} 
+<ul>
+    <li>{{ article.name }} 
+    {{ article.time }}
+    </li>
+</ul>
+{% endfor %}
+
+{{ pagination.links }}
+
+</body>
+</html>

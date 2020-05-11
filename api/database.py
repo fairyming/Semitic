@@ -13,7 +13,7 @@ class Database():
 
     def select(self, COLLECTION_NAME, query):
         mycol = self.mydb[COLLECTION_NAME]
-        return mycol.find(query)
+        return mycol.find(query).sort("time", -1)
 
     def count(self, COLLECTION_NAME):
         mycol = self.mydb[COLLECTION_NAME]

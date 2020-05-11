@@ -7,5 +7,4 @@ def ioc_push(ioc_list):
         for tag in tags:
             if tag in ioc:
                 link_ioc_mongo.insert(tag, ioc)
-                print(ioc)
     link_ioc_mongo.close()

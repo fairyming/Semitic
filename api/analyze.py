@@ -4,6 +4,7 @@ from lib.data import rule_key
 from lib.common import list_dict_duplicate_removal, deal_msg, private_ip
 from api.database import Database
 from api.ioc import IoC
+import base64
 import json
 
 
@@ -137,6 +138,8 @@ def merge_flow(flow_list, type):
                     alert_dict["sid"] = alert_flow["alert"]["signature_id"]
                     if "app_proto" in alert_flow and alert_flow["app_proto"] != "failed":
                         alert_dict["proto"] = alert_flow["app_proto"]
+                    if "payload" in alert_flow:
+                        alert_dict["payload"] = base64.b64decode(alert_flow["payload"])
                     else:
                         alert_dict["proto"] = alert_flow["proto"]
 
@@ -211,7 +214,6 @@ def deal_eve_content(filecontent):
             eve_json.append(json.loads(i))
         link_mongo.insert("eve", eve_json)
         json_result = classify_eve(eve_json)
-    print(json_result["service"])
     if json_result:
         for type_json in json_result:
             link_mongo.insert(type_json, json_result[type_json])

@@ -6,7 +6,18 @@ from api.analyze import deal_eve_content
 from api.display import Display_Semitic, Display_Intelligence, Visualization
 from api.search import Search
 from flask_paginate import Pagination, get_page_parameter
+from lib.common import list_dict_duplicate_removal
 app = Flask(__name__)
+
+@app.route("/api/upload_eve", methods=["POST"])
+def upload_eve():
+    client_addr = request.remote_addr
+    filename = request.files['clientfile'].filename
+    filecontent = request.files['clientfile'].readlines()
+    deal_eve_content(filecontent)
+    logger.log(CUSTOM_LOGGING.SUCCESS, "客户端{client_addr},提交日志{filename}, 告警日志{allow_num}条".format(
+        client_addr=client_addr, filename=filename, allow_num=len(filecontent)))
+    return "upload sucess"
 
 
 @app.route("/")

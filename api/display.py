@@ -1,4 +1,5 @@
 from api.database import Database
+from lib.common import list_dict_duplicate_removal
 from lib.data import ioc, proto
 
 
@@ -15,6 +16,7 @@ class Display_Semitic():
             for alert in select_result:
                 alert.pop("_id")
                 result["data"].append(alert)
+        result["data"] = list_dict_duplicate_removal(result["data"])
         self.link.close()
         return result
 
@@ -27,6 +29,7 @@ class Display_Semitic():
                 alert.pop("_id")
                 result["data"].append(alert)
         self.link.close()
+        result["data"] = list_dict_duplicate_removal(result["data"])
         return result
 
     def display_service(self):
@@ -38,6 +41,7 @@ class Display_Semitic():
                 service.pop("_id")
                 result["data"].append(service)
         self.link.close()
+        result["data"] = list_dict_duplicate_removal(result["data"])
         return result
 
     def display_proto(self, type):
@@ -48,6 +52,7 @@ class Display_Semitic():
             proto.pop("_id")
             result["data"].append(proto)
         self.link.close
+        result["data"] = list_dict_duplicate_removal(result["data"])
         return result
 
     def alert_count(self):
@@ -83,6 +88,7 @@ class Display_Intelligence():
                 alert.pop("_id")
                 result["data"].append(alert)
         self.link.close()
+        result["data"] = list_dict_duplicate_removal(result["data"])
         return result
 
     def ioc_count(self):
@@ -93,6 +99,7 @@ class Display_Intelligence():
             count += count + result[ioc_type]
         result["count"] = count
         self.link.close()
+        result["data"] = list_dict_duplicate_removal(result["data"])
         return result
 
 

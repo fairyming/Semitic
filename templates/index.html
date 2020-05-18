@@ -28,15 +28,15 @@
                 					<tbody>
                 						<tr>
                 							<td>服务器IP地址</td>
-                							<td>127.0.0.1</td>
+                							<td>{{server_info.server_ip}}</td>
                 						</tr>
                 						<tr>
                 							<td>服务器端口</td>
-                							<td>80</td>
+                							<td>{{server_info.server_port}}</td>
                 						</tr>
                 						<tr>
                 							<td>联系邮箱</td>
-                							<td>leruge@163.com</td>
+                							<td>{{server_info.server_email}}</td>
                 						</tr>
                 					</tbody>
                                 </table>
@@ -54,19 +54,19 @@
                 					<tbody>
                 						<tr>
                 							<td>当前日志数</td>
-                							<td>127.0.0.1</td>
+                							<td>{{server_data.eve.count}}</td>
                 						</tr>
                 						<tr>
                 							<td>流量统计</td>
-                							<td>80</td>
+                							<td>TCP：{{server_data.proto.tcp}}   UDP：{{server_data.proto.udp}}</td>
                 						</tr>
                 						<tr>
                 							<td>告警统计</td>
-                							<td>leruge@163.com</td>
+                							<td>总告警数：{{server_data.alert.count}}、IoC统计告警数：{{server_data.alert.ioc_count}}、规则告警数：{{server_data.alert.rule_count}}</td>
 										</tr>
 										<tr>
                 							<td>IoC统计</td>
-                							<td>leruge@163.com</td>
+                							<td>{{server_data.ioc.count}}</td>
                 						</tr>
                 					</tbody>
                                 </table>

@@ -72,6 +72,13 @@ class Display_Semitic():
         result["count"] = result["tcp"] + result['udp']
         self.link.close()
         return result
+    
+    def eve_count(self):
+        result = {
+            "count": self.link.count("eve")
+        }
+        return result
+        
 
 
 class Display_Intelligence():
@@ -99,18 +106,19 @@ class Display_Intelligence():
             count += count + result[ioc_type]
         result["count"] = count
         self.link.close()
-        result["data"] = list_dict_duplicate_removal(result["data"])
+        # result["data"] = list_dict_duplicate_removal(result["data"])
         return result
 
 
 class Visualization():
     def display(self):
         result = {}
-        result["data"] = {}
         # 告警总数
         result["alert"] = Display_Semitic().alert_count()
         # ioc统计
         result["ioc"] = Display_Intelligence().ioc_count()
         # 协议分布
         result['proto'] = Display_Semitic().proto_count()
+        # eve
+        result["eve"] = Display_Semitic().eve_count()
         return result

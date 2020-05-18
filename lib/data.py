@@ -24,3 +24,6 @@ ioc = ["domain", "email", "hash", "ip", "url"]
 
 # proto
 proto = ["dns", "tls", "http", "tcp", "udp"]
+
+
+my_email = "czm9976@gamil.com"

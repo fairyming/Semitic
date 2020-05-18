@@ -6,6 +6,7 @@ from api.analyze import deal_eve_content
 from api.display import Display_Semitic, Display_Intelligence, Visualization
 from api.search import Search
 from flask_paginate import Pagination, get_page_parameter
+from lib.data import my_email
 from lib.common import list_dict_duplicate_removal
 app = Flask(__name__)
 
@@ -19,11 +20,19 @@ def upload_eve():
         client_addr=client_addr, filename=filename, allow_num=len(filecontent)))
     return "upload sucess"
 
-
 @app.route("/")
 def hello_world():
-    return render_template("index.html")
-
+    server_ip,server_port = request.headers.get("Host").split(":")
+    server_info = {
+        "server_ip" : server_ip,
+        "server_port": server_port,
+        "server_email": my_email
+    }
+    context = {
+        "server_info": server_info,
+        "server_data": Visualization().display()
+    }
+    return render_template("index.html", **context)
 
 @app.route("/alert_rule", methods=["GET"])
 def dispaly_alert_rule():
@@ -42,7 +51,6 @@ def dispaly_alert_rule():
 
     return render_template('alert_rule.html', **context)
 
-
 @app.route("/alert_ioc", methods=["GET"])
 def display_alert_ioc():
     all_ioc_alert = Display_Semitic().display_alert_ioc()["data"]
@@ -58,7 +66,6 @@ def display_alert_ioc():
         'alert_ioc': alert_ioc
     }
     return render_template('alert_ioc.html', **context)
-
 
 @app.route("/ioc", methods=["GET"])
 def display_ioc():
@@ -81,7 +88,6 @@ def display_ioc():
     else:
         return jsonify({"data": "无当前种类ioc"})
 
-
 @app.route("/proto", methods=["GET"])
 def display_proto():
     proto_type = request.args.get("type")
@@ -102,7 +108,6 @@ def display_proto():
     else:
         return jsonify({"data": "暂不支持当前协议"})
 
-
 @app.route("/service", methods=["GET"])
 def display_service():
     # return jsonify(Display_Semitic().display_service())
@@ -120,14 +125,12 @@ def display_service():
     }
     return render_template('service.html', **context)
 
-
 @app.route("/api/search/ioc", methods=["POST"])
 def search_ioc():
     # ip\domain\url\email\hash
     # eg:{"ip":"123.123.123.123"}
     data = request.get_json()
     return jsonify(Search(data).get_reslut())
-
 
 @app.route("/api/display/visualization", methods=["GET"])
 def visualization():

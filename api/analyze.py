@@ -114,8 +114,8 @@ def merge_flow(flow_list, type):
                     #     tls_dict["serial"] = tls_flow["tls"]["serial"]
                     # if "fingerprint" in tls_flow["tls"]:
                     #     tls_dict["fingerprint"] = tls_flow["tls"]["fingerprint"]
-                    flow_id.append(tls_flow["flow_id"])
-                    result.append(tls_dict)
+                        flow_id.append(tls_flow["flow_id"])
+                        result.append(tls_dict)
             except:
                 logger.log(CUSTOM_LOGGING.ERROR,
                            "tls_merge_error[{}]".format(tls_flow))
@@ -138,8 +138,6 @@ def merge_flow(flow_list, type):
                     alert_dict["sid"] = alert_flow["alert"]["signature_id"]
                     if "app_proto" in alert_flow and alert_flow["app_proto"] != "failed":
                         alert_dict["proto"] = alert_flow["app_proto"]
-                    if "payload" in alert_flow:
-                        alert_dict["payload"] = base64.b64decode(alert_flow["payload"])
                     else:
                         alert_dict["proto"] = alert_flow["proto"]
 

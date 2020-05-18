@@ -26,11 +26,13 @@ def upload_eve():
 
 @app.route("/api/display/alert/rule", methods=["GET"])
 def dispaly_alert_rule():
+    print(Display_Semitic().display_alert_rule())
     return jsonify(Display_Semitic().display_alert_rule())
 
 
 @app.route("/api/display/alert/ioc", methods=["GET"])
 def display_alert_ioc():
+    print(Display_Semitic().display_alert_ioc())
     return jsonify(Display_Semitic().display_alert_ioc())
 
 
@@ -46,6 +48,9 @@ def display_ioc():
 @app.route("/api/display/proto", methods=["GET"])
 def display_proto():
     proto_type = request.args.get("type")
+    tmp = Display_Semitic().display_proto(proto_type)
+    tmp["data"] = tmp["data"][1]
+    print(tmp)
     if proto_type in proto:
         return jsonify(Display_Semitic().display_proto(proto_type))
     else:
@@ -53,6 +58,7 @@ def display_proto():
 
 @app.route("/api/display/service", methods=["GET"])
 def display_service():
+    print(Display_Semitic().display_service())
     return jsonify(Display_Semitic().display_service())
 
 @app.route("/api/search/ioc", methods=["POST"])
@@ -60,6 +66,7 @@ def search_ioc():
     # ip\domain\url\email\hash
     # eg:{"ip":"123.123.123.123"}
     data = request.get_json()
+    print(Search(data).get_reslut())
     return jsonify(Search(data).get_reslut())
 
 
@@ -68,6 +75,7 @@ def visualization():
     # 返回当前库中ioc种类及每个种类个数，及所有ioc个数
     # 返回告警数，ioc告警数及规则告警数
     # 返回流量协议分布
+    print(Visualization().display())
     return jsonify(Visualization().display())
 
 

@@ -48,6 +48,7 @@ class IoC():
         return ioc_result
 
         # {'flow_id': 1210501935253800, 'time': '2019-12-16T12:00:26.080135+0000', 'src_ip': '192.168.63.20', 'src_port': 62419, 'dest_ip': '101.231.64.109', 'dest_port': 81, 'hostname': '101.231.64.109', 'uri': '/mobile/browser/WorkflowCenterTreeData.jsp?node=wftype_1&scope=2333', 'method': 'POST', '_id': ObjectId('5ea194764eeb0d1f8cb7a959')}
+
     def deal_http(self, http_list):
         ioc_result = []
         for http_dict in http_list:

@@ -89,7 +89,7 @@ class Display_Intelligence():
     def display_ioc(self, type):
         result = {}
         result["data"] = []
-        select_result = self.link.select(type, query={})
+        select_result = self.link.select(type, query={}, sort="disclosure_time")
         if select_result:
             for alert in select_result:
                 alert.pop("_id")

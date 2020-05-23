@@ -72,13 +72,22 @@ class IoC():
         for dns_dict in dns_list:
             try:
                 for rrname in dns_dict["rrname"]:
-                    result = self.link_mongo.select(
-                        "domain", {"domain": rrname})[0]
+                    try:
+                        result = self.link_mongo.select(
+                            "domain", {"domain": rrname})[0]
+                    except:
+                        result = self.link_mongo.select(
+                            "url", {"url": {"$regex": rrname}})[0]
+                    finally:
+                        pass
                     if result["tags"]:
                         ioc_alert = {}
                         for key in self.key_list:
                             ioc_alert[key] = dns_dict[key]
-                        ioc_alert["ioc"] = result["domain"]
+                        try:
+                            ioc_alert["ioc"] = result["domain"]
+                        except:
+                            ioc_alert["ioc"] = result["url"]
                         ioc_alert["tags"] = result["tags"]
                         ioc_result.append(ioc_alert)
             except:

@@ -50,6 +50,9 @@ class Display_Semitic():
         select_result = self.link.select(type, query={})
         for proto in select_result:
             proto.pop("_id")
+            if type == "http":
+                if proto["uri"] == "/api/upload_eve":
+                    continue
             result["data"].append(proto)
         self.link.close
         result["data"] = list_dict_duplicate_removal(result["data"])

@@ -1,0 +1,76 @@
+{% include 'head.html' ignore missing %} 
+{% include 'side.html' ignore missing %} 
+<!-- Page Content -->
+            <div class="page-content">
+                <!-- Page Breadcrumb -->
+                <!-- <div class="page-breadcrumbs">
+                    <ul class="breadcrumb">
+                        <li class="active">
+                            <i class="fa fa-home"></i>&nbsp;控制面板
+                        </li>
+                    </ul>
+                </div> -->
+                <!-- /Page Breadcrumb -->
+                <!-- Page Body -->
+                <div class="page-body">
+                	<div class="row">
+                		<div class="col-xs-12">
+                			<div class="widget">
+                				<div class="widget-header">
+                					<span class="widget-caption">服务识别</span>
+                					<!-- <div class="widget-buttons">
+                						<ul class="pagination pagination-sm">
+                							<li class="disabled"><a href="#">«</a></li>
+                                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                                            <li><a href="#">2</a></li>
+                                            <li><a href="#">3</a></li>
+                                            <li><a href="#">»</a></li>
+                						</ul>
+                					</div> -->
+                				</div>
+                				<div class="widget-body">
+                					<table class="table table-hover table-bordered">
+                						<thead>
+                							<tr>
+                                                <th>上线时间</th>
+                                                <th>服务所在IP</th>
+                                                <th>服务所在端口</th>
+												<th>服务名称</th>
+                                                <th>规则id</th>
+                							</tr>
+                						</thead>
+                						<tbody>
+                							{% for service in services %} 
+                                            <tr>
+                                                <td>{{service.time[0:19].replace("T", " ")}}</td>
+                                                <td>{{service.service_ip}}</td>
+                                                <td>{{service.service_port}}</td>
+                                                <td>
+                                                    <a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">{{service.service_name}}</a>
+                                                </td>
+                                                <td>{{service.sid}}</td>
+                                                
+                                            </tr>
+                                            {% endfor %}
+                						</tbody>
+                					</table>
+                				</div>
+                			</div>
+                		</div>
+                	</div>
+                </div>
+                <!-- /Page Body -->
+            </div>
+            <!-- /Page Content -->
+
+        </div>
+        <!-- /Page Container -->
+        <!-- Main Container -->
+
+    </div>
+
+    {% include 'js.html' ignore missing %} 
+</body>
+<!--  /Body -->
+</html>
+

@@ -1,0 +1,10 @@
+# Developer
+.vscode
+*.pyc
+.DS_store
+.idea
+*.log
+tmp.json
+test.py
+local.rules
+tmp.rules

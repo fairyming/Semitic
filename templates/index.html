@@ -1,0 +1,90 @@
+﻿{% include 'head.html' ignore missing %} 
+{% include 'side.html' ignore missing %} 
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Page Breadcrumb -->
+                <!-- <div class="page-breadcrumbs">
+                    <ul class="breadcrumb">
+                        <li class="active">
+                            <i class="fa fa-home"></i>&nbsp;控制面板
+                        </li>
+                    </ul>
+                </div> -->
+                <!-- /Page Breadcrumb -->
+                <!-- Page Body -->
+                <div class="page-body">
+                	<div class="row">
+                		<div class="col-xs-12">
+                			<div class="well with-header with-footer">
+                				<div class="header bg-themeprimary">
+                					服务器信息
+                				</div>
+                				<table class="table table-hover table-bordered">
+                					<thead>
+                						<tr>
+                							<th colspan="2">服务器信息</th>
+                						</tr>
+                					</thead>
+                					<tbody>
+                						<tr>
+                							<td>服务器IP地址</td>
+                							<td>{{server_info.server_ip}}</td>
+                						</tr>
+                						<tr>
+                							<td>服务器端口</td>
+                							<td>{{server_info.server_port}}</td>
+                						</tr>
+                						<tr>
+                							<td>联系邮箱</td>
+                							<td>{{server_info.server_email}}</td>
+                						</tr>
+                					</tbody>
+                                </table>
+							</div>
+							<div class="well with-header with-footer">
+                				<div class="header bg-themeprimary">
+                					告警信息
+                				</div>
+                				<table class="table table-hover table-bordered">
+                					<thead>
+                						<tr>
+                							<th colspan="2">服务器信息</th>
+                						</tr>
+                					</thead>
+                					<tbody>
+                						<tr>
+                							<td>当前日志数</td>
+                							<td>{{server_data.eve.count}}</td>
+                						</tr>
+                						<tr>
+                							<td>流量统计</td>
+                							<td>TCP：{{server_data.proto.tcp}}   UDP：{{server_data.proto.udp}}</td>
+                						</tr>
+                						<tr>
+                							<td>告警统计</td>
+                							<td>总告警数：{{server_data.alert.count}}、IoC统计告警数：{{server_data.alert.ioc_count}}、规则告警数：{{server_data.alert.rule_count}}</td>
+										</tr>
+										<tr>
+                							<td>IoC统计</td>
+                							<td>{{server_data.ioc.count}}</td>
+                						</tr>
+                					</tbody>
+                                </table>
+                			</div>
+                		</div>
+                	</div>
+                </div>
+                <!-- /Page Body -->
+            </div>
+            <!-- /Page Content -->
+
+        </div>
+        <!-- /Page Container -->
+        <!-- Main Container -->
+
+    </div>
+
+	{% include 'js.html' ignore missing %} 
+</body>
+<!--  /Body -->
+</html>

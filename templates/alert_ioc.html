@@ -1,0 +1,85 @@
+{% include 'head.html' ignore missing %}
+{% include 'side.html' ignore missing %} 
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Page Breadcrumb -->
+                <!-- <div class="page-breadcrumbs">
+                    <ul class="breadcrumb">
+                        <li class="active">
+                            <i class="fa fa-home"></i>&nbsp;控制面板
+                        </li>
+                    </ul>
+                </div> -->
+                <!-- /Page Breadcrumb -->
+                <!-- Page Body -->
+                <div class="page-body">
+                	<div class="row">
+                		<div class="col-xs-12">
+                			<div class="widget">
+                				<div class="widget-header">
+                					<span class="widget-caption">IoC告警列表</span>
+                					<div class="widget-buttons">
+                						<!-- <ul class="pagination pagination-sm">
+                							<li class="disabled"><a href="#">«</a></li>
+                                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                                            <li><a href="#">2</a></li>
+                                            <li><a href="#">3</a></li>
+                                            <li><a href="#">»</a></li>
+                						</ul> -->
+                					</div>
+                				</div>
+                				<div class="widget-body">
+                					<table class="table table-hover table-bordered">
+                						<thead>
+                							<tr>
+												<th>时间</th>
+												<th>源IP</th>
+												<th>源端口</th>
+												<th>目的IP</th>
+												<th>目的端口</th>
+												<th>IoC</th>
+												<th>tag</th>
+                							</tr>
+                						</thead>
+                						<tbody>
+											{% for alert in alert_ioc %} 
+                							<tr>
+												<td>{{alert.time[0:19].replace("T", " ")}}</td>
+												<td>{{alert.src_ip}}</td>
+												<td>{{alert.src_port}}</td>
+												<td>{{alert.dest_ip}}</td>
+												<td>{{alert.dest_port}}</td>
+												<td>{{alert.ioc}}</td>
+												<!-- <td>{{alert.tags}}</td> -->										
+												<td>
+													{% for ioc in alert.tags %} 
+													<a class="btn btn-azure btn-xs" class="btn btn-azure btn-xs">{{ioc}}</a>
+													{% endfor %}
+												</td>
+												<!-- <td>{{alert.flow_id}}</td> -->
+											</tr>
+											{% endfor %}
+                						</tbody>
+                					</table>
+								</div>
+								<div class="widget-buttons">
+									{{ pagination.links }}
+								</div>
+                			</div>
+                		</div>
+                	</div>
+                </div>
+                <!-- /Page Body -->
+            </div>
+            <!-- /Page Content -->
+
+        </div>
+        <!-- /Page Container -->
+        <!-- Main Container -->
+
+    </div>
+
+    {% include 'js.html' ignore missing %} 
+</body>
+<!--  /Body -->
+</html>
